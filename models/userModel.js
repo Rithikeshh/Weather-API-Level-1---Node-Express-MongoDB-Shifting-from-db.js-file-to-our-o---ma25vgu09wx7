@@ -1,25 +1,32 @@
-// Define the User Schema
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+
 const userSchema = new mongoose.Schema(
   {
-    // Define the 'username' field
-    // 1) The data type of this field is a string
-    // 2) This field is required
-    // 3) Each username must be unique
-    // Define the 'email' field
-    // email
-    // 1) The data type of this field is a string
-    // 2) This field is required
-    // 3) Each email must be unique
-    // Define the 'password' field
-    //  password
-    // 1) The data type of this field is a string
-    // 2) This field is required
-    // 3) Password should be at least 8 characters long
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+      validate(value) {
+        if (value.length < 8) {
+          throw new Error('password should be at least 8 characters long');
+        }
+      },
+    },
   },
-  { timestamps: true } // Automatically generate 'createdAt' and 'updatedAt' timestamps
+  { timestamps: true }
 );
 
-// Pre-save hook to hash the user's password before saving it to the database
+// pre-save hook to hash password before saving to the database
 userSchema.pre('save', async function (next) {
   const user = this;
   const salt = await bcrypt.genSalt(10);
