@@ -21,7 +21,7 @@ const decodeToken = (req, res) => {
 
 // Function for user signup
 const signup = async (req, res) => {
-  try {
+try {
     const { username, email, password } = req.body;
     const user = new User({
       username,
@@ -32,13 +32,17 @@ const signup = async (req, res) => {
     await user.save();
 
     res.status(201).json({
-      status: 'User created successfully',
+      status: 'success',
       data: {
         user,
       },
     });
   } catch (err) {
-    res.status(400).json({ "message": "Please provide all required information", "status": "Error" });
+    res.status(500).json({
+      status: 'error',
+      message: 'Internal Server Error',
+      error: err.message,
+    });
   }
 };
 
